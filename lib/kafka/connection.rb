@@ -249,6 +249,10 @@ module Kafka
           return async_response.call
         end
       end
+    rescue Errno::EPIPE, Errno::ECONNRESET, Errno::ETIMEDOUT, EOFError => e
+      close
+
+      raise ConnectionError, "Connection error: #{e}"
     end
   end
 end
