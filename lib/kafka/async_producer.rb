@@ -139,6 +139,9 @@ module Kafka
     private
 
     def ensure_threads_running!
+      # If the worker thread has had an exception, shutdown this producer which will raise the error
+      shutdown if @worker_thread && @worker_thread.status.nil?
+
       @worker_thread = nil unless @worker_thread && @worker_thread.alive?
       @worker_thread ||= Thread.new { @worker.run }
 
